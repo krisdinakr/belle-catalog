@@ -7,10 +7,14 @@ export const userService = {
     {
       email,
       password,
+      firstName,
+      lastName,
       verified = false
     }: {
       email: string
       password: string
+      firstName: string
+      lastName: string
       verified?: boolean
     },
     session?: ClientSession
@@ -18,7 +22,9 @@ export const userService = {
     new User({
       email,
       password,
-      verified
+      verified,
+      firstName,
+      lastName
     }).save({ session }),
 
   getById: (userId: ObjectId) => User.findById(userId),

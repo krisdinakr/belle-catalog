@@ -5,10 +5,22 @@ import { IUser, UserModel, IUserMethods } from '@/contracts/user'
 
 const schema = new Schema<IUser, UserModel, IUserMethods>(
   {
-    email: String,
-    password: String,
-    firstName: String,
-    lastName: String,
+    email: {
+      type: String,
+      required: true
+    },
+    password: {
+      type: String,
+      required: true
+    },
+    firstName: {
+      type: String,
+      required: true
+    },
+    lastName: {
+      type: String,
+      required: true
+    },
     verified: {
       type: Boolean,
       default: false

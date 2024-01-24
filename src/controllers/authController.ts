@@ -7,7 +7,7 @@ import { jwtSign } from '@/utils/jwt'
 import { createHash } from '@/utils/hash'
 import { createCryptoString } from '@/utils/cryptoString'
 import { userService } from '@/services'
-import { SignInPayload, SignOutPayload } from '@/contracts/auth'
+import { SignInPayload, SignUpPayload } from '@/contracts/auth'
 import { IBodyRequest } from '@/contracts/request'
 import { createDateAddDaysFromNow } from '@/utils/dates'
 import { verificationService } from '@/services/verificationService'
@@ -47,7 +47,9 @@ export const authController = {
   },
 
   signUp: async (
-    { body: { email, password } }: IBodyRequest<SignOutPayload>,
+    {
+      body: { email, password, firstName, lastName }
+    }: IBodyRequest<SignUpPayload>,
     res: Response
   ) => {
     const session = await startSession()
@@ -67,7 +69,9 @@ export const authController = {
       const user = await userService.create(
         {
           email,
-          password: hashedPassword
+          password: hashedPassword,
+          firstName,
+          lastName
         },
         session
       )
