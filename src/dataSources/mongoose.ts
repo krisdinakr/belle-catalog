@@ -4,7 +4,9 @@ import winston from 'winston'
 export const mongoose = {
   run: async () => {
     try {
-      return await connect(process.env.MONGODB_URI!)
+      return await connect(process.env.MONGODB_URI!, {
+        dbName: 'dev-belle-catalog'
+      })
     } catch (error) {
       winston.error(error)
     }
