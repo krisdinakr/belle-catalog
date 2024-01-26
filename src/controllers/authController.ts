@@ -8,10 +8,15 @@ import { createHash } from '@/utils/hash'
 import { createCryptoString } from '@/utils/cryptoString'
 import { userService } from '@/services'
 import { SignInPayload, SignUpPayload } from '@/contracts/auth'
-import { IBodyRequest } from '@/contracts/request'
+import {
+  IBodyRequest,
+  IContextRequest,
+  IUserRequest
+} from '@/contracts/request'
 import { createDateAddDaysFromNow } from '@/utils/dates'
 import { verificationService } from '@/services/verificationService'
 import { ExpiresInDays } from '@/constants'
+import { redis } from '@/dataSources'
 
 export const authController = {
   signIn: async (
@@ -115,6 +120,30 @@ export const authController = {
         await session.abortTransaction()
         session.endSession()
       }
+
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        message: ReasonPhrases.BAD_REQUEST,
+        status: StatusCodes.BAD_REQUEST
+      })
+    }
+  },
+
+  signOut: async (
+    { context: { user, accessToken } }: IContextRequest<IUserRequest>,
+    res: Response
+  ) => {
+    try {
+      await redis.client.set(`expiredToken:${accessToken}`, `${user.id}`, {
+        EX: process.env.REDIS_TOKEN_EXPIRATION,
+        NX: true
+      })
+
+      return res.status(StatusCodes.OK).json({
+        message: ReasonPhrases.OK,
+        status: StatusCodes.OK
+      })
+    } catch (error) {
+      winston.error(error)
 
       return res.status(StatusCodes.BAD_REQUEST).json({
         message: ReasonPhrases.BAD_REQUEST,

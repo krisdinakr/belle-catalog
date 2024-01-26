@@ -18,4 +18,6 @@ export const auth = (router: Router): void => {
     authValidation.signUp,
     authController.signUp
   )
+
+  router.get('/auth/sign-out', authGuard.isAuth, authController.signOut)
 }
