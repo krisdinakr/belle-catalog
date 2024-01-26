@@ -1,5 +1,3 @@
-import { Secret } from 'jsonwebtoken'
-
 export declare global {
   namespace Express {
     interface Request {
@@ -7,7 +5,7 @@ export declare global {
     }
   }
 
-  namespace NodeJs {
+  namespace NodeJS {
     interface ProcessEnv {
       APP_PORT: number
       APP_URL: string
@@ -15,7 +13,7 @@ export declare global {
       MONGODB_URI: string
       REDIS_URI: string
       REDIS_TOKEN_EXPIRATION: number
-      JWT_SECRET: Secret
+      JWT_SECRET: string
       JWT_EXPIRATION: string
     }
   }

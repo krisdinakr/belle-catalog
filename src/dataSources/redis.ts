@@ -42,7 +42,7 @@ class Redis {
 
   public static getInstance(): Redis {
     if (!Redis.instance) {
-      Redis.instance = new Redis(process.env.REDIS_URI!)
+      Redis.instance = new Redis(process.env.REDIS_URI)
     }
 
     return Redis.instance
