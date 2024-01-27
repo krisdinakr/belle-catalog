@@ -15,7 +15,7 @@ import {
 } from '@/contracts/request'
 import { createDateAddDaysFromNow } from '@/utils/dates'
 import { verificationService } from '@/services/verificationService'
-import { ExpiresInDays } from '@/constants'
+import { ExpiresInDays, UserRole } from '@/constants'
 import { redis } from '@/dataSources'
 
 export const authController = {
@@ -53,7 +53,7 @@ export const authController = {
 
   signUp: async (
     {
-      body: { email, password, firstName, lastName }
+      body: { email, password, firstName, lastName, role = UserRole.user }
     }: IBodyRequest<SignUpPayload>,
     res: Response
   ) => {
@@ -76,7 +76,8 @@ export const authController = {
           email,
           password: hashedPassword,
           firstName,
-          lastName
+          lastName,
+          role
         },
         session
       )

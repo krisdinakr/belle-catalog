@@ -1,6 +1,7 @@
 import { ClientSession, ObjectId } from 'mongoose'
 
 import { User } from '@/models'
+import { UserRole } from '@/constants'
 
 export const userService = {
   create: (
@@ -9,12 +10,14 @@ export const userService = {
       password,
       firstName,
       lastName,
+      role = UserRole.user,
       verified = false
     }: {
       email: string
       password: string
       firstName: string
       lastName: string
+      role: number
       verified?: boolean
     },
     session?: ClientSession
@@ -22,9 +25,10 @@ export const userService = {
     new User({
       email,
       password,
-      verified,
       firstName,
-      lastName
+      lastName,
+      role,
+      verified
     }).save({ session }),
 
   getById: (userId: ObjectId) => User.findById(userId),

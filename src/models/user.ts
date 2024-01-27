@@ -2,6 +2,7 @@ import { Schema, model } from 'mongoose'
 import { compareSync } from 'bcrypt'
 
 import { IUser, UserModel, IUserMethods } from '@/contracts/user'
+import { UserRole } from '@/constants'
 
 const schema = new Schema<IUser, UserModel, IUserMethods>(
   {
@@ -20,6 +21,11 @@ const schema = new Schema<IUser, UserModel, IUserMethods>(
     lastName: {
       type: String,
       required: true
+    },
+    role: {
+      type: Number,
+      required: true,
+      default: UserRole.user
     },
     verified: {
       type: Boolean,

@@ -13,6 +13,7 @@ export interface IUser {
   password: string
   firstName: string
   lastName: string
+  role: number
   verified: boolean
   verifications?: ObjectId[]
   resetPasswords?: ObjectId[]

@@ -2,6 +2,7 @@ import { NextFunction, Response } from 'express'
 import { StatusCodes, ReasonPhrases } from 'http-status-codes'
 
 import { IContextRequest, IUserRequest } from '@/contracts/request'
+import { UserRole } from '@/constants'
 
 export const authGuard = {
   isAuth: (
@@ -28,6 +29,20 @@ export const authGuard = {
       return next()
     }
 
+    return res.status(StatusCodes.FORBIDDEN).json({
+      message: ReasonPhrases.FORBIDDEN,
+      status: StatusCodes.FORBIDDEN
+    })
+  },
+
+  isAdmin: (
+    { context: { user } }: IContextRequest<IUserRequest>,
+    res: Response,
+    next: NextFunction
+  ) => {
+    if (user && user.role === UserRole.admin) {
+      return next()
+    }
     return res.status(StatusCodes.FORBIDDEN).json({
       message: ReasonPhrases.FORBIDDEN,
       status: StatusCodes.FORBIDDEN
