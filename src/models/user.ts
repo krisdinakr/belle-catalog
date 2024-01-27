@@ -32,7 +32,8 @@ const schema = new Schema<IUser, UserModel, IUserMethods>(
       default: false
     },
     verifications: [{ type: Schema.Types.ObjectId, ref: 'Verification' }],
-    resetPasswords: [{ type: Schema.Types.ObjectId, ref: 'ResetPassword' }]
+    resetPasswords: [{ type: Schema.Types.ObjectId, ref: 'ResetPassword' }],
+    address: [{ type: Schema.Types.ObjectId, ref: 'Address' }]
   },
   { timestamps: true }
 )

@@ -7,6 +7,20 @@ export interface IVerification {
   user: ObjectId
 }
 
+export interface IAddress {
+  city: string
+  country: string
+  district: string
+  isDefault: boolean
+  isDeleted: boolean
+  name: string
+  phone: string
+  postalCode: string
+  province: string
+  street: string
+  user: ObjectId
+}
+
 export interface IUser {
   id: ObjectId
   email: string
@@ -17,6 +31,7 @@ export interface IUser {
   verified: boolean
   verifications?: ObjectId[]
   resetPasswords?: ObjectId[]
+  address?: ObjectId[]
 }
 
 export interface IUserMethods {

@@ -31,7 +31,7 @@ export const userService = {
       verified
     }).save({ session }),
 
-  getById: (userId: ObjectId) => User.findById(userId),
+  getById: (userId: ObjectId | string) => User.findById(userId),
 
   getByEmail: (email: string) => User.findOne({ email }),
 
@@ -78,6 +78,33 @@ export const userService = {
         user.verifications = []
       }
       user.verifications.push(verificationId)
+      await user.save({ session })
+    }
+  },
+
+  addAddressToUser: async (
+    {
+      userId,
+      addressId
+    }: {
+      userId: ObjectId
+      addressId: ObjectId
+    },
+    session?: ClientSession
+  ) => {
+    let options = {}
+
+    if (session) {
+      options = { session }
+    }
+
+    const user = await User.findOne({ _id: userId }, null, options)
+
+    if (user) {
+      if (!user.address) {
+        user.address = []
+      }
+      user.address.push(addressId)
       await user.save({ session })
     }
   }
