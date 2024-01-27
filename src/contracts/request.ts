@@ -21,7 +21,8 @@ export interface IUserRequest {
   accessToken: string
 }
 
-export interface IBrandRequest<D> extends Omit<Request, 'params' | 'body'> {
+export interface IBodyParamsRequest<T>
+  extends Omit<Request, 'params' | 'body'> {
   params: ParamsDictionary
-  body: D
+  body: T
 }

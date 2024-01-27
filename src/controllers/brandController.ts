@@ -6,7 +6,7 @@ import { brandService } from '@/services/brandService'
 import { CreateBrandPayload, UpdateBrandPayload } from '@/contracts/brand'
 import {
   IBodyRequest,
-  IBrandRequest,
+  IBodyParamsRequest,
   IParamsRequest
 } from '@/contracts/request'
 
@@ -83,7 +83,7 @@ export const brandController = {
     {
       params: { id },
       body: { logo, description, mobileBanner, desktopBanner }
-    }: IBrandRequest<UpdateBrandPayload>,
+    }: IBodyParamsRequest<UpdateBrandPayload>,
     res: Response
   ) => {
     try {
@@ -104,8 +104,7 @@ export const brandController = {
 
       return res.status(StatusCodes.BAD_REQUEST).json({
         message: ReasonPhrases.BAD_REQUEST,
-        error: true,
-        test: 'catch'
+        error: true
       })
     }
   },

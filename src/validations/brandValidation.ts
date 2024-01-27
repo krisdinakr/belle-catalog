@@ -5,7 +5,7 @@ import winston from 'winston'
 import { CreateBrandPayload, UpdateBrandPayload } from '@/contracts/brand'
 import {
   IBodyRequest,
-  IBrandRequest,
+  IBodyParamsRequest,
   IParamsRequest
 } from '@/contracts/request'
 import { brandService } from '@/services/brandService'
@@ -42,7 +42,7 @@ export const brandValidation = {
   },
 
   update: async (
-    req: IBrandRequest<UpdateBrandPayload>,
+    req: IBodyParamsRequest<UpdateBrandPayload>,
     res: Response,
     next: NextFunction
   ) => {
