@@ -1,6 +1,6 @@
 import { ClientSession, ObjectId } from 'mongoose'
 
-import { Verification } from '@/models/verification'
+import { Verification } from '@/models'
 
 export const verificationService = {
   create: (

@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongoose'
 
-import { Brand } from '@/models/brand'
+import { Brand } from '@/models'
 import { CreateBrandPayload, UpdateBrandPayload } from '@/contracts/brand'
 import { generateSlug } from '@/utils/slug'
 
