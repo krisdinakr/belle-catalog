@@ -1,5 +1,7 @@
 export { addressService } from './addressService'
 export { brandService } from './brandService'
 export { categoryService } from './categoryService'
+export { combinationService } from './combinationService'
+export { productService } from './productService'
 export { userService } from './userService'
 export { verificationService } from './verificationService'

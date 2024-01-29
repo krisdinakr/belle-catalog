@@ -4,12 +4,14 @@ import { Category } from '@/models'
 import { generateSlug } from '@/utils/slug'
 
 export const categoryService = {
-  getAll: () => Category.find({}),
+  getAll: () =>
+    Category.find({}).populate('parents', { name: 1, _id: 1, slug: 1 }),
 
   getByCategoryId: (categoryId: ObjectId | string) =>
     Category.findById(categoryId),
 
-  getOneByName: (name: string) => Category.findOne({ name }),
+  getOneByName: (name: string) =>
+    Category.findOne({ name }).populate('parents'),
 
   getManyByNames: (names: string[]) => Category.find({ name: { $in: names } }),
 

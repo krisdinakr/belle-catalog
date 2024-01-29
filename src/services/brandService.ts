@@ -9,6 +9,8 @@ export const brandService = {
 
   getById: (brandId: ObjectId | string) => Brand.findById(brandId),
 
+  getByName: (name: string) => Brand.findOne({ name }),
+
   create: ({
     name,
     logo,
