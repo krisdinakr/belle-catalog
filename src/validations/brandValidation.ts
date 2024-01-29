@@ -8,7 +8,7 @@ import {
   IBodyParamsRequest,
   IParamsRequest
 } from '@/contracts/request'
-import { brandService } from '@/services/brandService'
+import { brandService } from '@/services'
 
 export const brandValidation = {
   create: (

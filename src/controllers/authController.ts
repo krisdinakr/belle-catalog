@@ -14,7 +14,7 @@ import {
   IUserRequest
 } from '@/contracts/request'
 import { createDateAddDaysFromNow } from '@/utils/dates'
-import { verificationService } from '@/services/verificationService'
+import { verificationService } from '@/services'
 import { ExpiresInDays, UserRole } from '@/constants'
 import { redis } from '@/dataSources'
 

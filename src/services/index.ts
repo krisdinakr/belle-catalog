@@ -1,2 +1,5 @@
-export { userService } from './userService'
+export { addressService } from './addressService'
+export { brandService } from './brandService'
 export { categoryService } from './categoryService'
+export { userService } from './userService'
+export { verificationService } from './verificationService'

@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 import winston from 'winston'
 
-import { brandService } from '@/services/brandService'
+import { brandService } from '@/services'
 import { CreateBrandPayload, UpdateBrandPayload } from '@/contracts/brand'
 import {
   IBodyRequest,

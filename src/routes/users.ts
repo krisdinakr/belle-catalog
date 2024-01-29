@@ -1,7 +1,8 @@
+import { Router } from 'express'
+
 import { userController } from '@/controllers/userController'
 import { authGuard } from '@/guards'
-import { userValidation } from '@/validations/userValidation'
-import { Router } from 'express'
+import { userValidation } from '@/validations'
 
 export const user = (router: Router) => {
   router.get('/me', authGuard.isAuth, userController.me)

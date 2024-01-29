@@ -10,7 +10,7 @@ import {
   IUserRequest
 } from '@/contracts/request'
 import { IAddress } from '@/contracts/user'
-import { addressService } from '@/services/addressService'
+import { addressService } from '@/services'
 import { userService } from '@/services'
 
 export const userController = {
