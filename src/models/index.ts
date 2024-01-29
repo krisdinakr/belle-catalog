@@ -1,4 +1,5 @@
 export { Address } from './address'
 export { Brand } from './brand'
+export { Category } from './category'
 export { User } from './user'
 export { Verification } from './verification'

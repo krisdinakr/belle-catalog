@@ -1,2 +1,2 @@
 export const generateSlug = (text: string) =>
-  text.toLowerCase().replace(' ', '-')
+  text.toLowerCase().replaceAll(' ', '-')
