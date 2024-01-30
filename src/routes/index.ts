@@ -5,6 +5,7 @@ import { user } from './users'
 import { brands } from './brands'
 import { category } from './category'
 import { product } from './product'
+import { collection } from './collection'
 
 const router: Router = Router()
 
@@ -13,7 +14,8 @@ const routes: { [key: string]: (router: Router) => void } = {
   user,
   brands,
   category,
-  product
+  product,
+  collection
 }
 
 for (const route in routes) {

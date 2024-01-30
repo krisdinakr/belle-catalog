@@ -58,6 +58,25 @@ export const productController = {
     }
   },
 
+  getCollections: async (_req: Request, res: Response) => {
+    try {
+      const products = await productService.getLatestProduct()
+
+      return res.status(StatusCodes.OK).json({
+        data: products,
+        message: ReasonPhrases.OK,
+        error: false
+      })
+    } catch (error) {
+      winston.error(error)
+
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: ReasonPhrases.INTERNAL_SERVER_ERROR,
+        error: true
+      })
+    }
+  },
+
   create: async (
     {
       body: {

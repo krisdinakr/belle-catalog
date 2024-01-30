@@ -14,7 +14,9 @@ export const productService = {
       'parentCategory'
     ]),
 
-  getById: (id: ObjectId | string) => Product.findById({ id }),
+  getById: (id: ObjectId | string) => Product.findById({ _id: id }),
+
+  getLatestProduct: () => Product.find().sort({ createdAt: -1 }).limit(4),
 
   create: (data: Omit<IProduct, 'id' | 'slug'>, session?: ClientSession) => {
     return new Product({
