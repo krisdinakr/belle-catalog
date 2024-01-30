@@ -2,6 +2,11 @@ import { Model, ObjectId } from 'mongoose'
 
 import { ICombination } from './combination'
 
+export interface IImage {
+  isCover: boolean
+  url: string
+}
+
 export interface IProduct {
   id: ObjectId
   brand: ObjectId
@@ -11,7 +16,7 @@ export interface IProduct {
   defaultCategory: ObjectId
   howToUse: string
   ingredients: string
-  images: string[]
+  images: IImage[]
   name: string
   parentCategory: ObjectId
   slug: string
@@ -26,7 +31,7 @@ export interface ICreateProductPayload {
   defaultCategory: string
   howToUse: string
   ingredients: string
-  images: string[]
+  images: IImage[]
   name: string
   parentCategory: string
 }

@@ -23,7 +23,7 @@ const schema = new Schema<IProduct, ProductModel>(
       type: String,
       required: true
     },
-    images: [{ type: String }],
+    images: [{ type: Schema.Types.Mixed, required: true }],
     name: {
       type: String,
       required: true
