@@ -11,13 +11,13 @@ import {
   IUpdateCategoryPayload
 } from '@/contracts/category'
 
-interface IChildren extends Omit<ICategory, 'id'> {
+interface IChildren extends Omit<ICategory, 'id' | 'parents'> {
   _id: ObjectId
   children: IChildren[]
 }
 
 function getChildren(
-  source: Array<Omit<ICategory, 'id'> & Document> | IChildren[],
+  source: Array<Omit<ICategory, 'id'> & Document>,
   rootId: ObjectId,
   dept: number
 ) {
@@ -32,7 +32,6 @@ function getChildren(
         name: source[i].name,
         slug: source[i].slug,
         _id: source[i]._id,
-        parents: source[i].parents,
         children: getChildren(source, source[i]._id, dept + 1)
       })
     }

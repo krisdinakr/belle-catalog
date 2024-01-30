@@ -7,7 +7,7 @@ const schema = new Schema<ICombination, CombinationModel>(
     attributes: {
       type: Object
     },
-    images: [{ type: String }],
+    images: [{ type: Schema.Types.Mixed }],
     price: {
       type: Number,
       required: true
