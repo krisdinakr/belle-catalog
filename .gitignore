@@ -1,5 +1,6 @@
 node_modules
 public
+seeds
 .env
 *.log
 .DS_Store
