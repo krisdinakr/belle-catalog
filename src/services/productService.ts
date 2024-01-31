@@ -37,6 +37,66 @@ export const productService = {
         'parentCategory'
       ]),
 
+  filter: (query: { brand: string; category: string }) => {
+    const { brand, category } = query
+
+    return Product.aggregate([
+      {
+        $lookup: {
+          from: 'combinations',
+          localField: 'combinations',
+          foreignField: '_id',
+          as: 'combinations'
+        }
+      },
+      {
+        $lookup: {
+          from: 'categories',
+          localField: 'defaultCategory',
+          foreignField: '_id',
+          as: 'defaultCategory'
+        }
+      },
+      {
+        $lookup: {
+          from: 'categories',
+          localField: 'parentCategory',
+          foreignField: '_id',
+          as: 'parentCategory'
+        }
+      },
+      {
+        $lookup: {
+          from: 'categories',
+          localField: 'categories',
+          foreignField: '_id',
+          as: 'categories'
+        }
+      },
+      {
+        $match: {
+          ...(category && { 'categories.slug': category })
+        }
+      },
+      {
+        $lookup: {
+          from: 'brands',
+          localField: 'brand',
+          foreignField: '_id',
+          as: 'brand'
+        }
+      },
+      {
+        $match: {
+          ...(brand && { 'brand.slug': brand })
+        }
+      },
+      {
+        $unwind: '$brand'
+      }
+    ])
+  },
+
   create: (data: Omit<IProduct, 'id' | 'slug'>, session?: ClientSession) => {
     return new Product({
       ...data,
