@@ -8,9 +8,9 @@ export const product = (router: Router) => {
   router.get('/products', productController.getAll)
 
   router.get(
-    '/products/:id',
-    productValidation.getById,
-    productController.getById
+    '/products/:slug',
+    productValidation.getBySlug,
+    productController.getBySlug
   )
 
   router.post(

@@ -16,7 +16,26 @@ export const productService = {
 
   getById: (id: ObjectId | string) => Product.findById({ _id: id }),
 
-  getLatestProduct: () => Product.find().sort({ createdAt: -1 }).limit(4),
+  getBySlug: (slug: string) =>
+    Product.findOne({ slug }).populate([
+      'brand',
+      'categories',
+      'combinations',
+      'defaultCategory',
+      'parentCategory'
+    ]),
+
+  getLatestProduct: () =>
+    Product.find()
+      .sort({ createdAt: -1 })
+      .limit(4)
+      .populate([
+        'brand',
+        'categories',
+        'combinations',
+        'defaultCategory',
+        'parentCategory'
+      ]),
 
   create: (data: Omit<IProduct, 'id' | 'slug'>, session?: ClientSession) => {
     return new Product({

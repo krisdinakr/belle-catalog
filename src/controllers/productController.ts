@@ -58,6 +58,22 @@ export const productController = {
     }
   },
 
+  getBySlug: async ({ params: { slug } }: IParamsRequest, res: Response) => {
+    const product = await productService.getBySlug(slug)
+    if (product) {
+      return res.status(StatusCodes.OK).json({
+        data: product,
+        message: ReasonPhrases.OK,
+        error: false
+      })
+    }
+
+    return res.status(StatusCodes.NOT_FOUND).json({
+      message: ReasonPhrases.NOT_FOUND,
+      error: false
+    })
+  },
+
   getCollections: async (_req: Request, res: Response) => {
     try {
       const products = await productService.getLatestProduct()
