@@ -40,14 +40,33 @@ function getChildren(
 }
 
 export const categoryController = {
-  getAll: async (_: Request, res: Response) => {
+  getAll: async ({ query }: Request, res: Response) => {
     try {
-      const categories = await categoryService.getAll()
+      const categories = await categoryService.getAll(query)
 
       return res.status(StatusCodes.OK).json({
         data: categories,
         message: ReasonPhrases.OK,
         error: false
+      })
+    } catch (error) {
+      winston.error(error)
+
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: ReasonPhrases.INTERNAL_SERVER_ERROR,
+        error: true
+      })
+    }
+  },
+
+  getBySlug: async ({ params: { slug } }: IParamsRequest, res: Response) => {
+    try {
+      const category = await categoryService.getBySlug(slug)
+
+      return res.status(StatusCodes.OK).json({
+        data: category,
+        message: ReasonPhrases.OK,
+        error: true
       })
     } catch (error) {
       winston.error(error)
