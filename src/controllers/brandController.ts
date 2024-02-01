@@ -49,6 +49,25 @@ export const brandController = {
     }
   },
 
+  getBySlug: async ({ params: { slug } }: IParamsRequest, res: Response) => {
+    try {
+      const brand = await brandService.getBySlug(slug)
+
+      return res.status(StatusCodes.OK).json({
+        data: brand,
+        message: ReasonPhrases.OK,
+        error: false
+      })
+    } catch (error) {
+      winston.error(error)
+
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: StatusCodes.INTERNAL_SERVER_ERROR,
+        error: true
+      })
+    }
+  },
+
   create: async (
     {
       body: { name, logo, description, desktopBanner, mobileBanner }

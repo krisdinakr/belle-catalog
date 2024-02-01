@@ -6,7 +6,11 @@ import { brandController } from '@/controllers/brandController'
 export const brands = (router: Router) => {
   router.get('/brands', brandController.getAll)
 
-  router.get('/brands/:id', brandController.getById)
+  router.get(
+    '/brands/:slug',
+    brandValidation.getBySlug,
+    brandController.getBySlug
+  )
 
   router.post(
     '/brands',

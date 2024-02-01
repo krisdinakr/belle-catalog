@@ -11,6 +11,8 @@ export const brandService = {
 
   getByName: (name: string) => Brand.findOne({ name }),
 
+  getBySlug: (slug: string) => Brand.findOne({ slug }),
+
   create: ({
     name,
     logo,
