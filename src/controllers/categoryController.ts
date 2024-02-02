@@ -3,7 +3,7 @@ import { StatusCodes, ReasonPhrases } from 'http-status-codes'
 import winston from 'winston'
 import { Document, ObjectId } from 'mongoose'
 
-import { categoryService } from '@/services'
+import { brandService, categoryService, productService } from '@/services'
 import { IBodyRequest, IParamsRequest } from '@/contracts/request'
 import {
   CreateCategoryPayload,
@@ -26,7 +26,7 @@ function getChildren(
     if (
       source[i].parents &&
       source[i].parents.length === dept &&
-      source[i].parents.includes(rootId)
+      source[i].parents.map(p => p.toString()).includes(rootId.toString())
     ) {
       data.push({
         name: source[i].name,
@@ -112,6 +112,47 @@ export const categoryController = {
       return res.status(StatusCodes.BAD_REQUEST).json({
         message: ReasonPhrases.BAD_REQUEST,
         error: true
+      })
+    } catch (error) {
+      winston.error(error)
+
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: ReasonPhrases.INTERNAL_SERVER_ERROR,
+        error: true
+      })
+    }
+  },
+
+  getByBrand: async ({ query }: Request, res: Response) => {
+    try {
+      const brand = String(query.brand)
+      const targetedBrand = await brandService.getBySlug(brand)
+      if (!targetedBrand) {
+        return res.status(StatusCodes.NOT_FOUND).json({
+          message: ReasonPhrases.NOT_FOUND,
+          error: true
+        })
+      }
+
+      const rootCategory: (Omit<ICategory, 'id'> & Document) | null =
+        await categoryService.getBySlug('shop-by-category')
+
+      const products = await productService.filter({ brand })
+      const categories: Array<Omit<ICategory, 'id'> & Document> = []
+      products.forEach(product => {
+        product.categories.forEach((cat: Omit<ICategory, 'id'> & Document) => {
+          if (!categories?.find(i => i._id === cat._id)) {
+            categories.push(cat)
+          }
+        })
+      })
+
+      const result = getChildren(categories, rootCategory?.id, 1)
+
+      return res.status(StatusCodes.OK).json({
+        data: result,
+        message: ReasonPhrases.OK,
+        error: false
       })
     } catch (error) {
       winston.error(error)

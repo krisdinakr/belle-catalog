@@ -8,6 +8,12 @@ export const category = (router: Router) => {
   router.get('/categories', categoryController.getAll)
 
   router.get(
+    '/categories/distinct/products',
+    categoryValidation.getCategoryByBrand,
+    categoryController.getByBrand
+  )
+
+  router.get(
     '/categories/children',
     categoryValidation.getChildren,
     categoryController.getChildren

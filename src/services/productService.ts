@@ -37,7 +37,7 @@ export const productService = {
         'parentCategory'
       ]),
 
-  filter: (query: { brand: string; category: string }) => {
+  filter: (query: { brand?: string; category?: string }) => {
     const { brand, category } = query
 
     return Product.aggregate([
