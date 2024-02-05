@@ -6,6 +6,7 @@
   "scripts": {
     "start": "yarn run build && cross-env NODE_ENV=production node ./dist/index.js",
     "build": "rm -rf ./dist && tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
+    "postbuild": "mv node_modules ./dist",
     "dev": "cross-env NODE_ENV=development nodemon",
     "seed": "ts-node --files -r tsconfig-paths/register"
   },
