@@ -22,5 +22,3 @@ app.use(
 app.listen(process.env.APP_PORT, () =>
   console.log(`listening server on ${process.env.APP_URL}`)
 )
-
-export default app
