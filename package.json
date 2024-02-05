@@ -4,14 +4,16 @@
   "description": "Belle Skin Care & Makeup Store API",
   "main": "./src",
   "scripts": {
-    "start": "yarn run rm:public && cross-env NODE_ENV=production ts-node --files -r tsconfig-paths/register ./src",
+    "start": "yarn run build && cross-env NODE_ENV=production node ./dist/index.js",
+    "build": "yarn run rm:dist && tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
     "dev": "yarn run rm:public && cross-env NODE_ENV=development nodemon",
-    "rm:public": "rm -rf ./public",
+    "rm:dist": "rm -rf ./dist",
     "seed": "ts-node --files -r tsconfig-paths/register"
   },
   "author": "Krisdina",
   "license": "MIT",
   "dependencies": {
+    "@vercel/node": "^3.0.17",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.3.2",
