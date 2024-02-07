@@ -2,9 +2,14 @@ import { Response, NextFunction } from 'express'
 import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 import winston from 'winston'
 
-import { IBodyParamsRequest, IParamsRequest } from '@/contracts/request'
+import {
+  IBodyParamsRequest,
+  IBodyRequest,
+  IParamsRequest
+} from '@/contracts/request'
 import { IAddress } from '@/contracts/user'
 import { userService } from '@/services'
+import { ICartPayload } from '@/contracts/cart'
 
 export const userValidation = {
   addAddress: async (
@@ -73,6 +78,52 @@ export const userValidation = {
       if (!user) {
         return res.status(StatusCodes.NOT_FOUND).json({
           message: ReasonPhrases.NOT_FOUND,
+          error: true
+        })
+      }
+
+      return next()
+    } catch (error) {
+      winston.error(error)
+
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: ReasonPhrases.INTERNAL_SERVER_ERROR,
+        error: true
+      })
+    }
+  },
+
+  updateCart: async (
+    req: IBodyRequest<ICartPayload>,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      if (
+        !req.body.action ||
+        !req.body.combination ||
+        !req.body.quantity ||
+        !['add', 'plus', 'minus'].includes(req.body.action)
+      ) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+          message: ReasonPhrases.BAD_REQUEST,
+          error: true
+        })
+      }
+
+      if (
+        (req.body.action === 'minus' || req.body.action === 'plus') &&
+        !req.body.id
+      ) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+          message: ReasonPhrases.BAD_REQUEST,
+          error: true
+        })
+      }
+
+      if (req.body.action === 'add' && !req.body.product) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+          message: ReasonPhrases.BAD_REQUEST,
           error: true
         })
       }

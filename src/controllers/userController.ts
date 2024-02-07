@@ -5,13 +5,15 @@ import winston from 'winston'
 
 import {
   IBodyRequest,
+  IContextBodyRequest,
   IContextRequest,
   IParamsRequest,
   IUserRequest
 } from '@/contracts/request'
 import { IAddress } from '@/contracts/user'
 import { addressService } from '@/services'
-import { userService } from '@/services'
+import { userService, cartService } from '@/services'
+import { ICartPayload } from '@/contracts/cart'
 
 export const userController = {
   me: async (
@@ -121,6 +123,95 @@ export const userController = {
         message: ReasonPhrases.OK,
         error: false
       })
+    } catch (error) {
+      winston.error(error)
+
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: ReasonPhrases.INTERNAL_SERVER_ERROR,
+        error: true
+      })
+    }
+  },
+
+  getCart: async (
+    { context: user }: IContextRequest<IUserRequest>,
+    res: Response
+  ) => {
+    try {
+      if (!user) {
+        return res.status(StatusCodes.NOT_FOUND).json({
+          message: ReasonPhrases.NOT_FOUND,
+          status: StatusCodes.NOT_FOUND
+        })
+      }
+
+      const cart = await cartService.getByUserId(user.user.id)
+      return res.status(StatusCodes.OK).json({
+        data: cart,
+        message: ReasonPhrases.OK,
+        error: false
+      })
+    } catch (error) {
+      winston.error(error)
+
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: ReasonPhrases.INTERNAL_SERVER_ERROR,
+        error: true
+      })
+    }
+  },
+
+  updateCart: async (
+    {
+      context: user,
+      body: { action, id, product, combination, quantity }
+    }: IContextBodyRequest<ICartPayload>,
+    res: Response
+  ) => {
+    try {
+      if (!user) {
+        return res.status(StatusCodes.NOT_FOUND).json({
+          message: ReasonPhrases.NOT_FOUND,
+          error: true
+        })
+      }
+
+      if ((action === 'minus' || action === 'plus') && id) {
+        const targetedCart = await cartService.getByCartId(id)
+
+        if (!targetedCart) {
+          return res.status(StatusCodes.NOT_FOUND).json({
+            message: ReasonPhrases.NOT_FOUND,
+            error: true
+          })
+        }
+
+        const updatedCart = await cartService.update(targetedCart.id, {
+          combination,
+          quantity
+        })
+
+        return res.status(StatusCodes.OK).json({
+          data: updatedCart?.id,
+          message: ReasonPhrases.OK,
+          error: false
+        })
+      }
+
+      if (action === 'add' && product) {
+        const cart = await cartService.create({
+          user: user.user.id,
+          product,
+          combination,
+          quantity
+        })
+
+        return res.status(StatusCodes.CREATED).json({
+          data: cart,
+          message: ReasonPhrases.CREATED,
+          error: false
+        })
+      }
     } catch (error) {
       winston.error(error)
 

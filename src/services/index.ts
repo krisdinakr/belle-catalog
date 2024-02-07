@@ -1,5 +1,6 @@
 export { addressService } from './addressService'
 export { brandService } from './brandService'
+export { cartService } from './cartService'
 export { categoryService } from './categoryService'
 export { combinationService } from './combinationService'
 export { productService } from './productService'

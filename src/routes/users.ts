@@ -20,4 +20,13 @@ export const user = (router: Router) => {
     userValidation.addAddress,
     userController.addAddress
   )
+
+  router.get('/users/me/carts', authGuard.isAuth, userController.getCart)
+
+  router.post(
+    '/users/me/carts',
+    authGuard.isAuth,
+    userValidation.updateCart,
+    userController.updateCart
+  )
 }
