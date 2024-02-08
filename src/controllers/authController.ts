@@ -64,7 +64,7 @@ export const authController = {
       if (isUserExist) {
         return res.status(StatusCodes.CONFLICT).json({
           message: ReasonPhrases.CONFLICT,
-          status: StatusCodes.CONFLICT
+          error: true
         })
       }
 
@@ -112,7 +112,7 @@ export const authController = {
       return res.status(StatusCodes.OK).json({
         data: { accessToken },
         message: ReasonPhrases.OK,
-        status: StatusCodes.OK
+        error: true
       })
     } catch (error) {
       winston.error(error)
@@ -141,14 +141,14 @@ export const authController = {
 
       return res.status(StatusCodes.OK).json({
         message: ReasonPhrases.OK,
-        status: StatusCodes.OK
+        error: false
       })
     } catch (error) {
       winston.error(error)
 
-      return res.status(StatusCodes.BAD_REQUEST).json({
-        message: ReasonPhrases.BAD_REQUEST,
-        status: StatusCodes.BAD_REQUEST
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: ReasonPhrases.INTERNAL_SERVER_ERROR,
+        error: true
       })
     }
   }

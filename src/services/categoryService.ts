@@ -5,7 +5,7 @@ import { generateSlug } from '@/utils/slug'
 
 export const categoryService = {
   getAll: (filter: object) =>
-    Category.find(filter).populate('parents', { name: 1, _id: 1, slug: 1 }),
+    Category.find(filter).populate('parents', ['name', '_id', 'slug']),
 
   getBySlug: (slug: string) => Category.findOne({ slug }),
 

@@ -4,8 +4,15 @@ import { Cart } from '@/models'
 import { ICart } from '@/contracts/cart'
 
 export const cartService = {
-  getByUserId: (userId: ObjectId) =>
-    Cart.find({ user: userId }).populate(['combination', 'product', 'user']),
+  getByUserId: (userId: ObjectId) => {
+    return Cart.find({ user: userId })
+      .populate('combination', ['attribute', 'images', 'stock', 'price', '_id'])
+      .populate({
+        path: 'product',
+        populate: { path: 'brand' },
+        select: ['brand', 'name', 'images', '_id']
+      })
+  },
 
   getByCartId: (cartId: ObjectId | string) => Cart.findById(cartId),
 
