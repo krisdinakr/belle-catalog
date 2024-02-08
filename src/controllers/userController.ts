@@ -141,7 +141,7 @@ export const userController = {
       if (!user) {
         return res.status(StatusCodes.NOT_FOUND).json({
           message: ReasonPhrases.NOT_FOUND,
-          status: StatusCodes.NOT_FOUND
+          error: true
         })
       }
 
@@ -209,7 +209,7 @@ export const userController = {
         }
       }
 
-      if ((action === 'minus' || action === 'plus') && id) {
+      if (action === 'update' && id) {
         const targetedCart = await cartService.getByCartId(id)
 
         if (!targetedCart) {
@@ -240,10 +240,37 @@ export const userController = {
     }
   },
 
-  deleteCart: async ({ params: { id } }: IParamsRequest, res: Response) => {
+  deleteOneCart: async ({ params: { id } }: IParamsRequest, res: Response) => {
     try {
-      await cartService.delete(id)
+      await cartService.deleteOne(id)
 
+      return res.status(StatusCodes.OK).json({
+        message: ReasonPhrases.OK,
+        error: false
+      })
+    } catch (error) {
+      winston.error(error)
+
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: ReasonPhrases.INTERNAL_SERVER_ERROR,
+        error: true
+      })
+    }
+  },
+
+  deleteAllCart: async (
+    { context: user }: IContextRequest<IUserRequest>,
+    res: Response
+  ) => {
+    try {
+      if (!user) {
+        return res.status(StatusCodes.NOT_FOUND).json({
+          message: ReasonPhrases.NOT_FOUND,
+          error: true
+        })
+      }
+
+      await cartService.deleteMany(user.user.id)
       return res.status(StatusCodes.OK).json({
         message: ReasonPhrases.OK,
         error: false

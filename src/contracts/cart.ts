@@ -11,7 +11,7 @@ export interface ICart {
 export type CartModel = Model<ICart>
 
 export interface ICartPayload {
-  action: 'add' | 'plus' | 'minus'
+  action: 'add' | 'update'
   id?: ObjectId
   product?: ObjectId
   combination: ObjectId

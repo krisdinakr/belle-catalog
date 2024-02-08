@@ -34,6 +34,12 @@ export const user = (router: Router) => {
     '/users/me/carts/:id',
     authGuard.isAuth,
     userValidation.deleteCart,
-    userController.deleteCart
+    userController.deleteOneCart
+  )
+
+  router.delete(
+    '/users/me/carts',
+    authGuard.isAuth,
+    userController.deleteAllCart
   )
 }

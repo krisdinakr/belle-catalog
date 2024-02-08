@@ -27,7 +27,9 @@ export const cartService = {
     return new Cart({ user, product, combination, quantity }).save()
   },
 
-  delete: (cartId: ObjectId | string) => Cart.findByIdAndDelete(cartId),
+  deleteOne: (cartId: ObjectId | string) => Cart.findByIdAndDelete(cartId),
+
+  deleteMany: (userId: ObjectId) => Cart.deleteMany({ user: userId }),
 
   update: (
     cartId: ObjectId,

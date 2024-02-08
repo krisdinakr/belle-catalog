@@ -103,7 +103,7 @@ export const userValidation = {
         !req.body.action ||
         !req.body.combination ||
         !req.body.quantity ||
-        !['add', 'plus', 'minus'].includes(req.body.action)
+        !['add', 'update'].includes(req.body.action)
       ) {
         return res.status(StatusCodes.BAD_REQUEST).json({
           message: ReasonPhrases.BAD_REQUEST,
@@ -111,10 +111,7 @@ export const userValidation = {
         })
       }
 
-      if (
-        (req.body.action === 'minus' || req.body.action === 'plus') &&
-        !req.body.id
-      ) {
+      if (req.body.action === 'update' && !req.body.id) {
         return res.status(StatusCodes.BAD_REQUEST).json({
           message: ReasonPhrases.BAD_REQUEST,
           error: true
@@ -145,7 +142,7 @@ export const userValidation = {
     next: NextFunction
   ) => {
     try {
-      if (req.params.id) {
+      if (!req.params.id) {
         return res.status(StatusCodes.BAD_REQUEST).json({
           message: ReasonPhrases.BAD_REQUEST,
           error: true
