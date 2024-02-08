@@ -176,6 +176,39 @@ export const userController = {
         })
       }
 
+      if (action === 'add' && product) {
+        const existingCart = await cartService.getByProductAndCombination({
+          product,
+          combination
+        })
+
+        if (existingCart) {
+          const updatedCart = await cartService.update(existingCart.id, {
+            combination: existingCart.combination,
+            quantity: existingCart.quantity + quantity
+          })
+
+          return res.status(StatusCodes.OK).json({
+            data: updatedCart,
+            message: ReasonPhrases.OK,
+            error: false
+          })
+        } else {
+          const cart = await cartService.create({
+            user: user.user.id,
+            product,
+            combination,
+            quantity
+          })
+
+          return res.status(StatusCodes.CREATED).json({
+            data: cart,
+            message: ReasonPhrases.CREATED,
+            error: false
+          })
+        }
+      }
+
       if ((action === 'minus' || action === 'plus') && id) {
         const targetedCart = await cartService.getByCartId(id)
 
@@ -197,21 +230,24 @@ export const userController = {
           error: false
         })
       }
+    } catch (error) {
+      winston.error(error)
 
-      if (action === 'add' && product) {
-        const cart = await cartService.create({
-          user: user.user.id,
-          product,
-          combination,
-          quantity
-        })
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: ReasonPhrases.INTERNAL_SERVER_ERROR,
+        error: true
+      })
+    }
+  },
 
-        return res.status(StatusCodes.CREATED).json({
-          data: cart,
-          message: ReasonPhrases.CREATED,
-          error: false
-        })
-      }
+  deleteCart: async ({ params: { id } }: IParamsRequest, res: Response) => {
+    try {
+      await cartService.delete(id)
+
+      return res.status(StatusCodes.OK).json({
+        message: ReasonPhrases.OK,
+        error: false
+      })
     } catch (error) {
       winston.error(error)
 

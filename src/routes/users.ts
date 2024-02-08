@@ -29,4 +29,11 @@ export const user = (router: Router) => {
     userValidation.updateCart,
     userController.updateCart
   )
+
+  router.delete(
+    '/users/me/carts/:id',
+    authGuard.isAuth,
+    userValidation.deleteCart,
+    userController.deleteCart
+  )
 }

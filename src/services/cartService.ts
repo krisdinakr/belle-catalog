@@ -9,11 +9,18 @@ export const cartService = {
 
   getByCartId: (cartId: ObjectId | string) => Cart.findById(cartId),
 
+  getByProductAndCombination: ({
+    product,
+    combination
+  }: Pick<ICart, 'product' | 'combination'>) => {
+    return Cart.findOne({ product, combination })
+  },
+
   create: ({ user, product, combination, quantity }: Omit<ICart, 'id'>) => {
     return new Cart({ user, product, combination, quantity }).save()
   },
 
-  delete: (cartId: ObjectId) => Cart.findByIdAndDelete(cartId),
+  delete: (cartId: ObjectId | string) => Cart.findByIdAndDelete(cartId),
 
   update: (
     cartId: ObjectId,
