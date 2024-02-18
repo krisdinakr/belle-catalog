@@ -15,8 +15,9 @@ export const authValidation = {
     try {
       if (!req.body.email || !req.body.password) {
         return res.status(StatusCodes.BAD_REQUEST).json({
-          message: ReasonPhrases.BAD_REQUEST,
-          status: StatusCodes.BAD_REQUEST
+          message: 'Email and password are required.',
+          status: StatusCodes.BAD_REQUEST,
+          error: true
         })
       }
 
@@ -31,8 +32,9 @@ export const authValidation = {
         !validator.isEmail(normalizedEmail, { allow_utf8_local_part: false })
       ) {
         return res.status(StatusCodes.BAD_REQUEST).json({
-          message: ReasonPhrases.BAD_REQUEST,
-          status: StatusCodes.BAD_REQUEST
+          message: 'Email is not valid',
+          status: StatusCodes.BAD_REQUEST,
+          error: true
         })
       }
 
@@ -42,9 +44,9 @@ export const authValidation = {
     } catch (error) {
       winston.error(error)
 
-      return res.status(StatusCodes.BAD_REQUEST).json({
-        message: ReasonPhrases.BAD_REQUEST,
-        status: StatusCodes.BAD_REQUEST
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: ReasonPhrases.INTERNAL_SERVER_ERROR,
+        status: StatusCodes.INTERNAL_SERVER_ERROR
       })
     }
   },
@@ -63,8 +65,9 @@ export const authValidation = {
         !req.body.lastName
       ) {
         return res.status(StatusCodes.BAD_REQUEST).json({
-          message: ReasonPhrases.BAD_REQUEST,
-          status: StatusCodes.BAD_REQUEST
+          message: 'Email, password, first name and last name are required.',
+          status: StatusCodes.BAD_REQUEST,
+          error: true
         })
       }
 
@@ -79,8 +82,9 @@ export const authValidation = {
         !validator.isEmail(normalizedEmail, { allow_utf8_local_part: false })
       ) {
         return res.status(StatusCodes.BAD_REQUEST).json({
-          message: ReasonPhrases.BAD_REQUEST,
-          status: ReasonPhrases.BAD_REQUEST
+          message: 'Email is not valid',
+          status: StatusCodes.BAD_REQUEST,
+          error: true
         })
       }
 
@@ -90,9 +94,9 @@ export const authValidation = {
     } catch (error) {
       winston.error(error)
 
-      return res.status(StatusCodes.BAD_REQUEST).json({
-        message: ReasonPhrases.BAD_REQUEST,
-        status: StatusCodes.BAD_REQUEST
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: ReasonPhrases.INTERNAL_SERVER_ERROR,
+        status: StatusCodes.INTERNAL_SERVER_ERROR
       })
     }
   }
