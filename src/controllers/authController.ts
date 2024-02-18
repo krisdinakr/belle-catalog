@@ -30,7 +30,8 @@ export const authController = {
       if (!user || !comparePassword) {
         return res.status(StatusCodes.NOT_FOUND).json({
           message: ReasonPhrases.NOT_FOUND,
-          status: ReasonPhrases.NOT_FOUND
+          status: ReasonPhrases.NOT_FOUND,
+          error: true
         })
       }
 
@@ -39,14 +40,16 @@ export const authController = {
       return res.status(StatusCodes.OK).json({
         data: { accessToken },
         message: ReasonPhrases.OK,
-        status: StatusCodes.OK
+        status: StatusCodes.OK,
+        error: false
       })
     } catch (error) {
+      console.log(error)
       winston.error(error)
 
-      return res.status(StatusCodes.BAD_REQUEST).json({
-        message: ReasonPhrases.BAD_REQUEST,
-        status: StatusCodes.BAD_REQUEST
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: ReasonPhrases.INTERNAL_SERVER_ERROR,
+        status: StatusCodes.INTERNAL_SERVER_ERROR
       })
     }
   },
@@ -64,6 +67,7 @@ export const authController = {
       if (isUserExist) {
         return res.status(StatusCodes.CONFLICT).json({
           message: ReasonPhrases.CONFLICT,
+          status: StatusCodes.CONFLICT,
           error: true
         })
       }
@@ -115,6 +119,7 @@ export const authController = {
         error: true
       })
     } catch (error) {
+      console.log(error)
       winston.error(error)
 
       if (session.inTransaction()) {
@@ -122,9 +127,9 @@ export const authController = {
         session.endSession()
       }
 
-      return res.status(StatusCodes.BAD_REQUEST).json({
-        message: ReasonPhrases.BAD_REQUEST,
-        status: StatusCodes.BAD_REQUEST
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: ReasonPhrases.INTERNAL_SERVER_ERROR,
+        status: StatusCodes.INTERNAL_SERVER_ERROR
       })
     }
   },
