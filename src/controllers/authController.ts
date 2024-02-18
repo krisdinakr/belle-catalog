@@ -44,7 +44,6 @@ export const authController = {
         error: false
       })
     } catch (error) {
-      console.log(error)
       winston.error(error)
 
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -119,7 +118,6 @@ export const authController = {
         error: true
       })
     } catch (error) {
-      console.log(error)
       winston.error(error)
 
       if (session.inTransaction()) {
