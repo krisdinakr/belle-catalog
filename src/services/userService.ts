@@ -2,6 +2,7 @@ import { ClientSession, ObjectId } from 'mongoose'
 
 import { User } from '@/models'
 import { UserRole } from '@/constants'
+import { ProfilePayload } from '@/contracts/user'
 
 export const userService = {
   create: (
@@ -31,11 +32,38 @@ export const userService = {
       verified
     }).save({ session }),
 
-  getById: (userId: ObjectId | string) => User.findById(userId),
+  getById: (userId: ObjectId | string) =>
+    User.findById(userId, { address: 0, verified: 0 }),
 
   getByEmail: (email: string) => User.findOne({ email }),
 
   isExistByEmail: (email: string) => User.exists({ email }),
+
+  updateProfile: (
+    userId: ObjectId,
+    { firstName, lastName, phoneNumber, photo, dateOfBirth }: ProfilePayload
+  ) => {
+    return User.findByIdAndUpdate(
+      userId,
+      {
+        firstName,
+        lastName,
+        phoneNumber,
+        photo,
+        dateOfBirth
+      },
+      {
+        fields: [
+          'email',
+          'firstName',
+          'lastName',
+          'phoneNumber',
+          'photo',
+          'dateOfBirth'
+        ]
+      }
+    )
+  },
 
   updatePasswordByUserId: (
     userId: ObjectId,

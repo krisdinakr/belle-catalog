@@ -3,47 +3,27 @@ import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 import winston from 'winston'
 
 import {
-  IBodyParamsRequest,
   IBodyRequest,
+  IContextBodyRequest,
   IParamsRequest
 } from '@/contracts/request'
-import { IAddress } from '@/contracts/user'
-import { userService } from '@/services'
+import { IAddressPayload, ProfilePayload } from '@/contracts/user'
 import { ICartPayload } from '@/contracts/cart'
 
 export const userValidation = {
-  addAddress: async (
-    req: IBodyParamsRequest<Omit<IAddress, 'isDefault' | 'isDeleted' | 'user'>>,
+  updateProfile: async (
+    req: IContextBodyRequest<ProfilePayload>,
     res: Response,
     next: NextFunction
   ) => {
     try {
-      if (!req.params.id) {
-        return res.status(StatusCodes.BAD_REQUEST).json({
-          message: ReasonPhrases.BAD_REQUEST,
-          error: true
-        })
-      }
-
-      const user = await userService.getById(req.params.id)
-      if (!user) {
-        return res.status(StatusCodes.NOT_FOUND).json({
-          message: ReasonPhrases.NOT_FOUND,
-          error: true
-        })
-      }
-
       if (
-        req.body.city &&
-        req.body.country &&
-        req.body.district &&
-        req.body.name &&
-        req.body.phone &&
-        req.body.postalCode &&
-        req.body.province &&
-        req.body.street
+        req.body.firstName ||
+        req.body.lastName ||
+        req.body.phoneNumber ||
+        req.body.photo ||
+        req.body.dateOfBirth
       ) {
-        Object.assign(req.body, { user: user.id })
         return next()
       }
 
@@ -61,28 +41,52 @@ export const userValidation = {
     }
   },
 
-  getAddress: async (
-    req: IParamsRequest,
+  updateAddress: async (
+    req: IContextBodyRequest<IAddressPayload>,
     res: Response,
     next: NextFunction
   ) => {
     try {
-      if (!req.params.id) {
-        return res.status(StatusCodes.BAD_REQUEST).json({
-          message: ReasonPhrases.BAD_REQUEST,
-          error: true
-        })
+      if (
+        req.body.action === 'update' &&
+        req.body.id &&
+        (req.body.city ||
+          req.body.country ||
+          req.body.district ||
+          req.body.isDefault ||
+          req.body.name ||
+          req.body.phone ||
+          req.body.postalCode ||
+          req.body.province ||
+          req.body.street ||
+          req.body.recipientName)
+      ) {
+        return next()
       }
 
-      const user = await userService.getById(req.params.id)
-      if (!user) {
-        return res.status(StatusCodes.NOT_FOUND).json({
-          message: ReasonPhrases.NOT_FOUND,
-          error: true
-        })
+      if (
+        req.body.action === 'add' &&
+        req.body.city &&
+        req.body.country &&
+        req.body.district &&
+        req.body.name &&
+        req.body.phone &&
+        req.body.postalCode &&
+        req.body.province &&
+        req.body.street &&
+        req.body.recipientName
+      ) {
+        return next()
       }
 
-      return next()
+      if (req.body.action === 'delete' && req.body.id && req.body.isDeleted) {
+        return next()
+      }
+
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        message: ReasonPhrases.BAD_REQUEST,
+        error: true
+      })
     } catch (error) {
       winston.error(error)
 

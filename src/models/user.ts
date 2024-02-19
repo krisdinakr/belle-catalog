@@ -22,6 +22,15 @@ const schema = new Schema<IUser, UserModel, IUserMethods>(
       type: String,
       required: true
     },
+    phoneNumber: {
+      type: String
+    },
+    photo: {
+      type: String
+    },
+    dateOfBirth: {
+      type: Number
+    },
     role: {
       type: Number,
       required: true,
@@ -48,6 +57,7 @@ schema.methods.toJSON = function () {
   delete obj.password
   delete obj.verifications
   delete obj.resetPasswords
+  delete obj.__v
 
   return obj
 }

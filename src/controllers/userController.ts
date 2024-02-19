@@ -4,13 +4,12 @@ import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 import winston from 'winston'
 
 import {
-  IBodyRequest,
   IContextBodyRequest,
   IContextRequest,
   IParamsRequest,
   IUserRequest
 } from '@/contracts/request'
-import { IAddress } from '@/contracts/user'
+import { IAddressPayload, ProfilePayload } from '@/contracts/user'
 import { addressService } from '@/services'
 import { userService, cartService } from '@/services'
 import { ICartPayload } from '@/contracts/cart'
@@ -48,47 +47,171 @@ export const userController = {
     }
   },
 
-  addAddress: async (
+  getProfile: async (
+    { context: user }: IContextRequest<IUserRequest>,
+    res: Response
+  ) => {
+    try {
+      if (!user) {
+        return res.status(StatusCodes.NOT_FOUND).json({
+          message: ReasonPhrases.NOT_FOUND,
+          error: true
+        })
+      }
+
+      const userProfile = await userService.getById(user.user.id)
+
+      return res.status(StatusCodes.OK).json({
+        data: userProfile,
+        message: ReasonPhrases.OK,
+        error: false
+      })
+    } catch (error) {
+      winston.error(error)
+
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: ReasonPhrases.INTERNAL_SERVER_ERROR,
+        error: true
+      })
+    }
+  },
+
+  updateProfile: async (
     {
+      context: user,
+      body: { firstName, lastName, phoneNumber, photo, dateOfBirth }
+    }: IContextBodyRequest<ProfilePayload>,
+    res: Response
+  ) => {
+    try {
+      if (!user) {
+        return res.status(StatusCodes.NOT_FOUND).json({
+          message: ReasonPhrases.NOT_FOUND,
+          error: true
+        })
+      }
+
+      const updatedUser = await userService.updateProfile(user.user.id, {
+        firstName,
+        lastName,
+        phoneNumber,
+        photo,
+        dateOfBirth
+      })
+
+      return res.status(StatusCodes.OK).json({
+        data: updatedUser,
+        message: ReasonPhrases.OK,
+        error: false
+      })
+    } catch (error) {
+      winston.error(error)
+
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: ReasonPhrases.INTERNAL_SERVER_ERROR,
+        error: true
+      })
+    }
+  },
+
+  updateAddress: async (
+    {
+      context: user,
       body: {
+        action,
+        id,
         city,
         country,
         district,
+        isDefault,
+        isDeleted,
         name,
         phone,
         postalCode,
         province,
         street,
-        user
+        recipientName
       }
-    }: IBodyRequest<Omit<IAddress, 'isDefault' | 'isDeleted'>>,
+    }: IContextBodyRequest<IAddressPayload>,
     res: Response
   ) => {
     const session = await startSession()
     try {
+      if (!user) {
+        return res.status(StatusCodes.NOT_FOUND).json({
+          message: ReasonPhrases.NOT_FOUND,
+          error: true
+        })
+      }
+
       session.startTransaction()
 
-      const address = await addressService.create(
-        {
-          city,
-          country,
-          district,
-          isDefault: false,
-          isDeleted: false,
-          name,
-          phone,
-          postalCode,
-          province,
-          street,
-          user
-        },
-        session
-      )
+      if (action === 'add') {
+        const address = await addressService.create(
+          {
+            city,
+            country,
+            district,
+            isDefault: false,
+            isDeleted: false,
+            name,
+            phone,
+            postalCode,
+            province,
+            street,
+            recipientName,
+            user: user.user.id
+          },
+          session
+        )
 
-      await userService.addAddressToUser({
-        userId: user,
-        addressId: address.id
-      })
+        await userService.addAddressToUser({
+          userId: user.user.id,
+          addressId: address?.id
+        })
+      }
+
+      if (action === 'update' && id) {
+        const targetedAddress = await addressService.getByAddressId(id)
+
+        if (!targetedAddress) {
+          return res.status(StatusCodes.NOT_FOUND).json({
+            message: ReasonPhrases.NOT_FOUND,
+            error: true
+          })
+        }
+
+        await addressService.updateById(
+          id,
+          {
+            city,
+            country,
+            district,
+            isDefault,
+            isDeleted: false,
+            name,
+            phone,
+            postalCode,
+            province,
+            street,
+            recipientName
+          },
+          session
+        )
+      }
+
+      if (action === 'delete' && id && isDeleted) {
+        const targetedAddress = await addressService.getByAddressId(id)
+
+        if (!targetedAddress) {
+          return res.status(StatusCodes.NOT_FOUND).json({
+            message: ReasonPhrases.NOT_FOUND,
+            error: true
+          })
+        }
+
+        await addressService.deletedById(id, session)
+      }
 
       await session.commitTransaction()
       session.endSession()
@@ -107,9 +230,19 @@ export const userController = {
     }
   },
 
-  getAddress: async ({ params: { id } }: IParamsRequest, res: Response) => {
+  getAddress: async (
+    { context: user }: IContextRequest<IUserRequest>,
+    res: Response
+  ) => {
     try {
-      const addresses = await addressService.getByUserId(id)
+      if (!user) {
+        return res.status(StatusCodes.NOT_FOUND).json({
+          message: ReasonPhrases.NOT_FOUND,
+          error: true
+        })
+      }
+
+      const addresses = await addressService.getByUserId(user.user.id)
 
       if (!addresses) {
         return res.status(StatusCodes.NOT_FOUND).json({
@@ -119,7 +252,7 @@ export const userController = {
       }
 
       return res.status(StatusCodes.OK).json({
-        data: addresses,
+        data: addresses.filter(i => !i.isDeleted),
         message: ReasonPhrases.OK,
         error: false
       })

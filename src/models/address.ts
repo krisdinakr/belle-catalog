@@ -47,11 +47,23 @@ const schema = new Schema<IAddress>(
     street: {
       type: String,
       required: true
+    },
+    recipientName: {
+      type: String,
+      required: true
     }
   },
   {
     timestamps: true
   }
 )
+
+schema.methods.toJSON = function () {
+  const obj = this.toObject()
+
+  delete obj.__v
+
+  return obj
+}
 
 export const Address = model<IAddress>('Address', schema)

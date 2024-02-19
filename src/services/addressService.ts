@@ -16,7 +16,8 @@ export const addressService = {
       postalCode,
       province,
       street,
-      user
+      user,
+      recipientName
     }: IAddress,
     session?: ClientSession
   ) => {
@@ -31,15 +32,18 @@ export const addressService = {
       postalCode,
       province,
       street,
-      user
+      user,
+      recipientName
     }).save({ session })
   },
 
   getByAddressId: (addressId: ObjectId | string) => Address.findById(addressId),
 
-  getByUserId: (userId: ObjectId | string) => Address.find({ user: userId }),
+  getByUserId: (userId: ObjectId | string) =>
+    Address.find({ user: userId }, { user: 0 }),
 
   updateById: (
+    id: ObjectId | string,
     {
       city,
       country,
@@ -50,11 +54,13 @@ export const addressService = {
       phone,
       postalCode,
       province,
-      street
+      street,
+      recipientName
     }: Omit<IAddress, 'user'>,
     session?: ClientSession
   ) => {
     return Address.findByIdAndUpdate(
+      id,
       {
         city,
         country,
@@ -65,9 +71,14 @@ export const addressService = {
         phone,
         postalCode,
         province,
-        street
+        street,
+        recipientName
       },
       { session }
     )
+  },
+
+  deletedById: (id: ObjectId | string, session: ClientSession) => {
+    return Address.findByIdAndUpdate(id, { isDeleted: true }, { session })
   }
 }

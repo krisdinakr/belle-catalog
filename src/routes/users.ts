@@ -7,18 +7,22 @@ import { userValidation } from '@/validations'
 export const user = (router: Router) => {
   router.get('/me', authGuard.isAuth, userController.me)
 
-  router.get(
-    '/users/:id/address',
-    authGuard.isAuth,
-    userValidation.getAddress,
-    userController.getAddress
-  )
+  router.get('/me/profile', authGuard.isAuth, userController.getProfile)
 
   router.post(
-    '/users/:id/address',
+    '/me/profile',
     authGuard.isAuth,
-    userValidation.addAddress,
-    userController.addAddress
+    userValidation.updateProfile,
+    userController.updateProfile
+  )
+
+  router.get('/users/me/address', authGuard.isAuth, userController.getAddress)
+
+  router.post(
+    '/users/me/address',
+    authGuard.isAuth,
+    userValidation.updateAddress,
+    userController.updateAddress
   )
 
   router.get('/users/me/carts', authGuard.isAuth, userController.getCart)
