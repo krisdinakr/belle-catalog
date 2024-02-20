@@ -7,6 +7,7 @@ import { category } from './category'
 import { product } from './product'
 import { collection } from './collection'
 import { search } from './search'
+import { order } from './order'
 
 const router: Router = Router()
 
@@ -17,7 +18,8 @@ const routes: { [key: string]: (router: Router) => void } = {
   category,
   product,
   collection,
-  search
+  search,
+  order
 }
 
 for (const route in routes) {

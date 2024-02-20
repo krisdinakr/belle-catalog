@@ -16,6 +16,16 @@ export const cartService = {
 
   getByCartId: (cartId: ObjectId | string) => Cart.findById(cartId),
 
+  getManyByCartId: (id: string | string[] | ObjectId | ObjectId[]) => {
+    return Cart.find({ _id: { $in: id } })
+      .populate('combination', ['attribute', 'stock', 'price', '_id'])
+      .populate({
+        path: 'product',
+        populate: { path: 'brand', select: ['_id', 'name', 'slug'] },
+        select: ['brand', 'name', 'images', '_id', 'slug']
+      })
+  },
+
   getByProductAndCombination: ({
     product,
     combination
