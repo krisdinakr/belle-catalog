@@ -38,6 +38,10 @@ const schema = new Schema<IOrder, OrderModel>(
     },
     state: {
       type: String
+    },
+    referenceCode: {
+      type: String,
+      required: true
     }
   },
   { timestamps: true }

@@ -17,6 +17,7 @@ import {
 import { ObjectId, startSession } from 'mongoose'
 import { ICombination } from '@/contracts/combination'
 import { createDateAddDaysFromNow } from '@/utils/dates'
+import { createCryptoString } from '@/utils/cryptoString'
 
 export const orderController = {
   getOrder: async (
@@ -100,7 +101,8 @@ export const orderController = {
             totalPrice,
             shipping: shipping[0].id,
             deliveredDate,
-            state: OrderState.AwaitingShipment
+            state: OrderState.AwaitingShipment,
+            referenceCode: createCryptoString({ length: 8 })
           },
           session
         )

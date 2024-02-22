@@ -14,17 +14,41 @@ export const orderService = {
         populate: { path: 'brand', select: ['_id', 'name', 'slug'] },
         select: ['_id', 'brand', 'images', 'name', 'slug']
       })
-      .populate('products.combinations', ['stock', 'price', '_id'])
+      .populate('products.combinations', [
+        'stock',
+        'price',
+        '_id',
+        'attributes'
+      ])
+      .populate('shipping', [
+        'city',
+        'country',
+        'district',
+        'province',
+        'street'
+      ])
   },
 
   createOrder: (
-    { user, products, totalPrice }: Omit<IOrder, 'id'>,
+    {
+      user,
+      products,
+      totalPrice,
+      shipping,
+      deliveredDate,
+      state,
+      referenceCode
+    }: Omit<IOrder, 'id'>,
     session: ClientSession
   ) => {
     return new Order({
       user,
       products,
-      totalPrice
+      totalPrice,
+      shipping,
+      deliveredDate,
+      state,
+      referenceCode
     }).save({ session })
   }
 }

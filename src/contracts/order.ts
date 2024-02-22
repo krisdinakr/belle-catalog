@@ -25,6 +25,7 @@ export interface IOrder {
   shipping: IAddress
   deliveredDate: number
   state: OrderState
+  referenceCode: string
 }
 
 export type OrderModel = Model<IOrder>
