@@ -9,7 +9,11 @@ export const orderService = {
 
   getByUserId: (userId: ObjectId) => {
     return Order.find({ user: userId }, { user: 0 })
-      .populate('products.brand', ['_id', 'name', 'slug'])
+      .populate({
+        path: 'products.product',
+        populate: { path: 'brand', select: ['_id', 'name', 'slug'] },
+        select: ['_id', 'brand', 'images', 'name', 'slug']
+      })
       .populate('products.combinations', ['stock', 'price', '_id'])
   },
 
