@@ -32,7 +32,8 @@ export const userController = {
           id: user.user.id,
           email: user.user.email,
           firstName: user.user.firstName,
-          lastName: user.user.lastName
+          lastName: user.user.lastName,
+          photo: user.user.photo
         },
         message: ReasonPhrases.OK,
         status: StatusCodes.OK
